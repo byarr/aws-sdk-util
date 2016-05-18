@@ -14,7 +14,7 @@ public class RequestUtil {
 
     }
 
-    public static <Request, Response> Stream<Response> getStream(final Function<Request, Response> service, final Request initialRequest, final BiFunction<Request, Response, Request> nextRequestGenerator) {
+    private static <Request, Response> Stream<Response> getStream(final Function<Request, Response> service, final Request initialRequest, final BiFunction<Request, Response, Request> nextRequestGenerator) {
         final ResponseIterator<Request, Response> respIter = new ResponseIterator<>(service, initialRequest, nextRequestGenerator);
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(respIter, Spliterator.ORDERED), false);
     }

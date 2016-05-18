@@ -6,4 +6,6 @@ repositories {
 
 dependencies {
     compile 'com.amazonaws:aws-java-sdk:1.11.0'
+    testCompile 'junit:junit:4.12'
+    testCompile "org.mockito:mockito-core:1.+"
 }
