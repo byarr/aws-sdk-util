@@ -1,1 +1,1 @@
-# aws-sdk-util
+# aws-sdk-util [![Build Status](https://travis-ci.org/byarr/aws-sdk-util.svg?branch=develop)](https://travis-ci.org/byarr/aws-sdk-util)
