@@ -7,10 +7,15 @@ buildscript {
     }
 }
 
-apply plugin: "io.spring.dependency-management"
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 apply plugin: 'findbugs'
-apply plugin: "pmd"
+apply plugin: 'pmd'
+
+apply plugin: 'checkstyle'
+checkstyle {
+    toolVersion = '6.18'
+}
 
 repositories {
     mavenCentral()
@@ -27,3 +32,4 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile "org.mockito:mockito-core:1.+"
 }
+
