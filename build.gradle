@@ -12,13 +12,15 @@ buildscript {
 subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'java'
+    apply plugin: 'pmd'
+    apply plugin: 'findbugs'
+    apply plugin: 'checkstyle'
 
     compileJava {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
 
-    apply plugin: 'findbugs'
     tasks.withType(FindBugs) {
         reports {
             xml.enabled = false
@@ -26,9 +28,6 @@ subprojects {
         }
     }
 
-    apply plugin: 'pmd'
-
-    apply plugin: 'checkstyle'
     checkstyle {
         toolVersion = '6.18'
         configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
