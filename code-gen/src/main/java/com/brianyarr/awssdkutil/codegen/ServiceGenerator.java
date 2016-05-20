@@ -3,6 +3,8 @@ package com.brianyarr.awssdkutil.codegen;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.brianyarr.aws.RequestUtil;
 import com.squareup.javapoet.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -17,20 +19,14 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 public class ServiceGenerator {
-    private final TypeSpec.Builder classBuilder;
-    private final FieldSpec delegate;
 
     private static final Class<RequestUtil> REQUEST_UTIL_CLASS = RequestUtil.class;
 
-    public ServiceGenerator(final Class<?> serviceInterface) {
-        final String name;
-        if (serviceInterface.getSimpleName().startsWith("AWS")) {
-            name = serviceInterface.getSimpleName().substring(3);
-        }
-        else {
-            name = serviceInterface.getSimpleName() + "Util";
-        }
+    private final TypeSpec.Builder classBuilder;
+    private final FieldSpec delegate;
 
+    public ServiceGenerator(final Class<?> serviceInterface) {
+        final String name = generateName(serviceInterface);
         classBuilder = TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
         delegate = FieldSpec.builder(serviceInterface, "delegate", Modifier.PRIVATE, Modifier.FINAL).build();
         classBuilder.addField(delegate);
@@ -38,13 +34,24 @@ public class ServiceGenerator {
         addConstructor(serviceInterface);
     }
 
+    private static String generateName(final Class<?> serviceInterface) {
+        final String name;
+        if (serviceInterface.getSimpleName().startsWith("AWS")) {
+            name = serviceInterface.getSimpleName().substring(3);
+        }
+        else {
+            name = serviceInterface.getSimpleName() + "Util";
+        }
+        return name;
+    }
+
     private void addConstructor(final Class<?> serviceInterface) {
-        MethodSpec flux = MethodSpec.constructorBuilder()
+        final MethodSpec constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(serviceInterface, "delegate")
                 .addStatement("this.$N = $N", "delegate", "delegate")
                 .build();
-        classBuilder.addMethod(flux);
+        classBuilder.addMethod(constructor);
     }
 
     public void addMethod(final Method method) {
