@@ -9,41 +9,44 @@ buildscript {
     }
 }
 
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'java'
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java'
 
-apply plugin: 'findbugs'
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
+
+    apply plugin: 'findbugs'
+    tasks.withType(FindBugs) {
+        reports {
+            xml.enabled = false
+            html.enabled = true
+        }
+    }
+
+    apply plugin: 'pmd'
+
+    apply plugin: 'checkstyle'
+    checkstyle {
+        toolVersion = '6.18'
+        configFile = new File(rootDir, 'config/checkstyle/checkstyle.xml')
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.0'
+        }
+    }
+
+    dependencies {
+        compile 'com.amazonaws:aws-java-sdk-lambda'
+        testCompile 'junit:junit:4.12'
+        testCompile "org.mockito:mockito-core:1.+"
     }
 }
-
-apply plugin: 'pmd'
-
-apply plugin: 'checkstyle'
-checkstyle {
-    toolVersion = '6.18'
-}
-
-repositories {
-    mavenCentral()
-}
-
-dependencyManagement {
-    imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.0'
-    }
-}
-
-dependencies {
-    compile 'com.amazonaws:aws-java-sdk-lambda'
-    testCompile 'junit:junit:4.12'
-    testCompile "org.mockito:mockito-core:1.+"
-}
-
