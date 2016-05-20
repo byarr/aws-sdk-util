@@ -10,6 +10,13 @@ buildscript {
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'java'
 apply plugin: 'findbugs'
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
+}
+
 apply plugin: 'pmd'
 
 apply plugin: 'checkstyle'

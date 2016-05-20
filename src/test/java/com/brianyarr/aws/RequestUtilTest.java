@@ -69,8 +69,12 @@ public class RequestUtilTest {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
 
             DummyResponse that = (DummyResponse) o;
 
@@ -100,11 +104,11 @@ public class RequestUtilTest {
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+        public boolean equals(Object other) {
+            if (this == other) { return true; }
+            if (other == null || getClass() != other.getClass()) { return false; }
 
-            DummyRequest that = (DummyRequest) o;
+            DummyRequest that = (DummyRequest) other;
 
             return !(marker != null ? !marker.equals(that.marker) : that.marker != null);
 
