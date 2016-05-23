@@ -12,7 +12,7 @@ import static java.util.stream.Collectors.toList;
 
 public class ServiceGenerator {
 
-    private final JavaPoetClassGenerator classGenerator = new JavaPoetClassGenerator();
+    private final ClassGenerator classGenerator = new JavaPoetClassGenerator();
 
     public ServiceGenerator(final Class<?> serviceInterface) {
         final String name = generateName(serviceInterface);

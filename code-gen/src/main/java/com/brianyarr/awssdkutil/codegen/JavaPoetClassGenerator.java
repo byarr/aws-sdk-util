@@ -13,13 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class JavaPoetClassGenerator {
+public class JavaPoetClassGenerator implements ClassGenerator {
 
     private static final Class<RequestUtil> REQUEST_UTIL_CLASS = RequestUtil.class;
 
     private TypeSpec.Builder classBuilder;
     private FieldSpec delegate;
 
+    @Override
     public void createClass(final String name, final Class<?> serviceInterface) {
         classBuilder = TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
         delegate = FieldSpec.builder(serviceInterface, "delegate", Modifier.PRIVATE, Modifier.FINAL).build();
@@ -36,6 +37,7 @@ public class JavaPoetClassGenerator {
         classBuilder.addMethod(constructor);
     }
 
+    @Override
     public void addMethod(String name, final Class<?> responseType, Class<?> requestType, Method tokenMethod, Method setTokenMethod, final Method resultCollectionMethod) {
         final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
 
@@ -70,6 +72,7 @@ public class JavaPoetClassGenerator {
         classBuilder.addMethod(methodSpec);
     }
 
+    @Override
     public void build() throws IOException {
         JavaFile javaFile = JavaFile.builder("com.brianyarr.aws", classBuilder.build())
                 .build();
