@@ -57,7 +57,7 @@ public class ServiceGenerator {
         final Class<?> responseType = method.getReturnType();
 
         if (method.getParameterCount() != 1) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("No request param");
         }
         final Class<?> requestType = method.getParameterTypes()[0];
         final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
@@ -155,7 +155,7 @@ public class ServiceGenerator {
             }
 
             catch (IllegalStateException ex) {
-                System.out.println("Failed to add method " + method);
+                System.out.println("Failed to add method '" + method.getName() + "', " + ex.getMessage());
             }
         });
 
