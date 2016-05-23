@@ -3,18 +3,14 @@ package com.brianyarr.awssdkutil.codegen;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.brianyarr.aws.RequestUtil;
 import com.squareup.javapoet.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import javax.lang.model.element.Modifier;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
-
 
 import static java.util.stream.Collectors.toList;
 
@@ -56,6 +52,10 @@ public class ServiceGenerator {
 
     public void addMethod(final Method method) {
         final Class<?> responseType = method.getReturnType();
+
+        if (method.getParameterCount() != 1) {
+            throw new IllegalStateException();
+        }
         final Class<?> requestType = method.getParameterTypes()[0];
 
         final Method tokenMethod = getTokenMethod(responseType);
@@ -132,12 +132,15 @@ public class ServiceGenerator {
     public static void main(String[] args) throws IOException {
         final ServiceGenerator serviceGenerator = new ServiceGenerator(AWSLambda.class);
 
-        final Optional<Method> listFunctions = Arrays.stream(AWSLambda.class.getDeclaredMethods())
-                .filter(m -> m.getName().equals("listFunctions"))
-                .filter(m -> m.getParameterCount() == 1)
-                .findFirst();
+        Arrays.stream(AWSLambda.class.getDeclaredMethods()).forEach(method -> {
+            try {
+                serviceGenerator.addMethod(method);
+            }
 
-        listFunctions.ifPresent(serviceGenerator::addMethod);
+            catch (IllegalStateException ex) {
+                System.out.println("Failed to add method " + method);
+            }
+        });
 
         serviceGenerator.build();
     }
