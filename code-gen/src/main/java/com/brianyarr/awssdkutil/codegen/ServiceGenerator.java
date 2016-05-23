@@ -7,6 +7,9 @@ import com.squareup.javapoet.*;
 import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -57,24 +60,38 @@ public class ServiceGenerator {
             throw new IllegalStateException();
         }
         final Class<?> requestType = method.getParameterTypes()[0];
+        final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
 
         final Method tokenMethod = getTokenMethod(responseType);
         final Method setTokenMethod = getSetTokenMethod(requestType);
 
+        final Method resultCollectionMethod = getResultCollectionMethod(responseType);
+        final ParameterizedTypeName returnType;
+        if (resultCollectionMethod == null) {
+            returnType = ParameterizedTypeName.get(Stream.class, responseType);
+        } else {
+            final Type type = ((ParameterizedType) resultCollectionMethod.getGenericReturnType()).getActualTypeArguments()[0];
+            returnType = ParameterizedTypeName.get(Stream.class, type);
+        }
 
-        final ParameterizedTypeName returnType = ParameterizedTypeName.get(Stream.class, responseType);
-        final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
+        final StringBuilder methodBody = new StringBuilder("return $T.getStream($N::$N, $N, $T::$N, $T::$N)");
+        final List<Object> params = new ArrayList<>(Arrays.asList(REQUEST_UTIL_CLASS,
+                delegate, method.getName(),
+                request,
+                requestType, setTokenMethod.getName(),
+                responseType, tokenMethod.getName()));
+
+        if (resultCollectionMethod != null) {
+            methodBody.append(".flatMap(r -> r.$N().stream())");
+            params.add(resultCollectionMethod.getName());
+        }
+
 
         final MethodSpec methodSpec = MethodSpec.methodBuilder(method.getName())
                 .returns(returnType)
                 .addParameter(request)
                 .addModifiers(Modifier.PUBLIC)
-                .addStatement("return $T.getStream($N::$N, $N, $T::$N, $T::$N)",
-                        REQUEST_UTIL_CLASS,
-                        delegate, method.getName(),
-                        request,
-                        requestType, setTokenMethod.getName(),
-                        responseType, tokenMethod.getName())
+                .addStatement(methodBody.toString(), params.toArray())
                 .build();
 
         classBuilder.addMethod(methodSpec);
@@ -125,7 +142,7 @@ public class ServiceGenerator {
             return methods.get(0);
         }
         else {
-            throw new IllegalStateException("blah");
+            return null;
         }
     }
 
