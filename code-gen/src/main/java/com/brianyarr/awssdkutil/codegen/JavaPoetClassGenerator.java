@@ -38,7 +38,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
     }
 
     @Override
-    public void addMethod(String name, final Class<?> responseType, Class<?> requestType, Method tokenMethod, Method setTokenMethod, final Method resultCollectionMethod) {
+    public void addMethod(final String name, final Class<?> responseType, final Class<?> requestType, final Method tokenMethod, final Method setTokenMethod, final Method resultCollectionMethod) {
         final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
 
         final StringBuilder methodBody = new StringBuilder("return $T.getStream($N::$N, $N, $T::$N, $T::$N)");
@@ -60,7 +60,6 @@ public class JavaPoetClassGenerator implements ClassGenerator {
             methodBody.append(".flatMap(r -> r.$N().stream())");
             params.add(resultCollectionMethod.getName());
         }
-
 
         final MethodSpec methodSpec = MethodSpec.methodBuilder(name)
                 .returns(returnType)
