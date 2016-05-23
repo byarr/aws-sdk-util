@@ -12,10 +12,11 @@ import static java.util.stream.Collectors.toList;
 
 public class ServiceGenerator {
 
-    private final ClassGenerator classGenerator = new JavaPoetClassGenerator();
+    private final ClassGenerator classGenerator;
 
-    public ServiceGenerator(final Class<?> serviceInterface) {
+    public ServiceGenerator(final ClassGenerator classGenerator, final Class<?> serviceInterface) {
         final String name = generateName(serviceInterface);
+        this.classGenerator = classGenerator;
         classGenerator.createClass(name, serviceInterface);
     }
 
@@ -93,7 +94,7 @@ public class ServiceGenerator {
     }
 
     public static void main(String[] args) throws IOException {
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(AWSLambda.class);
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(), AWSLambda.class);
 
         Arrays.stream(AWSLambda.class.getDeclaredMethods()).forEach(method -> {
             try {
