@@ -1,36 +1,22 @@
 package com.brianyarr.awssdkutil.codegen;
 
 import com.amazonaws.services.lambda.AWSLambda;
-import com.brianyarr.aws.RequestUtil;
-import com.squareup.javapoet.*;
 
-import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
 public class ServiceGenerator {
 
-    private static final Class<RequestUtil> REQUEST_UTIL_CLASS = RequestUtil.class;
-
-    private final TypeSpec.Builder classBuilder;
-    private final FieldSpec delegate;
+    private final JavaPoetClassGenerator classGenerator = new JavaPoetClassGenerator();
 
     public ServiceGenerator(final Class<?> serviceInterface) {
         final String name = generateName(serviceInterface);
-        classBuilder = TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
-        delegate = FieldSpec.builder(serviceInterface, "delegate", Modifier.PRIVATE, Modifier.FINAL).build();
-        classBuilder.addField(delegate);
-
-        addConstructor(serviceInterface);
+        classGenerator.createClass(name, serviceInterface);
     }
 
     private static String generateName(final Class<?> serviceInterface) {
@@ -44,15 +30,6 @@ public class ServiceGenerator {
         return name;
     }
 
-    private void addConstructor(final Class<?> serviceInterface) {
-        final MethodSpec constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(serviceInterface, "delegate")
-                .addStatement("this.$N = $N", "delegate", "delegate")
-                .build();
-        classBuilder.addMethod(constructor);
-    }
-
     public void addMethod(final Method method) {
         final Class<?> responseType = method.getReturnType();
 
@@ -60,48 +37,17 @@ public class ServiceGenerator {
             throw new IllegalStateException("No request param");
         }
         final Class<?> requestType = method.getParameterTypes()[0];
-        final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
 
         final Method tokenMethod = getTokenMethod(responseType);
         final Method setTokenMethod = getSetTokenMethod(requestType);
 
         final Method resultCollectionMethod = getResultCollectionMethod(responseType);
-        final ParameterizedTypeName returnType;
-        if (resultCollectionMethod == null) {
-            returnType = ParameterizedTypeName.get(Stream.class, responseType);
-        } else {
-            final Type type = ((ParameterizedType) resultCollectionMethod.getGenericReturnType()).getActualTypeArguments()[0];
-            returnType = ParameterizedTypeName.get(Stream.class, type);
-        }
 
-        final StringBuilder methodBody = new StringBuilder("return $T.getStream($N::$N, $N, $T::$N, $T::$N)");
-        final List<Object> params = new ArrayList<>(Arrays.asList(REQUEST_UTIL_CLASS,
-                delegate, method.getName(),
-                request,
-                requestType, setTokenMethod.getName(),
-                responseType, tokenMethod.getName()));
-
-        if (resultCollectionMethod != null) {
-            methodBody.append(".flatMap(r -> r.$N().stream())");
-            params.add(resultCollectionMethod.getName());
-        }
-
-
-        final MethodSpec methodSpec = MethodSpec.methodBuilder(method.getName())
-                .returns(returnType)
-                .addParameter(request)
-                .addModifiers(Modifier.PUBLIC)
-                .addStatement(methodBody.toString(), params.toArray())
-                .build();
-
-        classBuilder.addMethod(methodSpec);
+        classGenerator.addMethod(method.getName(),responseType, requestType, tokenMethod, setTokenMethod, resultCollectionMethod);
     }
 
     public void build() throws IOException {
-        JavaFile javaFile = JavaFile.builder("com.brianyarr.aws", classBuilder.build())
-                .build();
-
-        javaFile.writeTo(System.out);
+        classGenerator.build();
     }
 
     private Method getTokenMethod(final Class<?> responseType) {
@@ -153,7 +99,6 @@ public class ServiceGenerator {
             try {
                 serviceGenerator.addMethod(method);
             }
-
             catch (IllegalStateException ex) {
                 System.out.println("Failed to add method '" + method.getName() + "', " + ex.getMessage());
             }
