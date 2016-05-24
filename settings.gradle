@@ -1,1 +1,1 @@
-include 'core', 'code-gen'
+include 'jaws-core', 'jaws-code-gen'
