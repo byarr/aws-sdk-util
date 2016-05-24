@@ -13,8 +13,10 @@ import static java.util.stream.Collectors.toList;
 public class ServiceGenerator {
 
     private final ClassGenerator classGenerator;
+    private final Class<?> serviceInterface;
 
     public ServiceGenerator(final ClassGenerator classGenerator, final Class<?> serviceInterface) {
+        this.serviceInterface = serviceInterface;
         final String name = generateName(serviceInterface);
         this.classGenerator = classGenerator;
         classGenerator.createClass(name, serviceInterface);
@@ -93,18 +95,20 @@ public class ServiceGenerator {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(), AWSLambda.class);
-
-        Arrays.stream(AWSLambda.class.getDeclaredMethods()).forEach(method -> {
+    public void tryAddAllMethods() {
+        Arrays.stream(serviceInterface.getDeclaredMethods()).forEach(method -> {
             try {
-                serviceGenerator.addMethod(method);
+                addMethod(method);
             }
             catch (IllegalStateException ex) {
                 System.out.println("Failed to add method '" + method.getName() + "', " + ex.getMessage());
             }
         });
+    }
 
+    public static void main(String[] args) throws IOException {
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(), AWSLambda.class);
+        serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
     }
 
