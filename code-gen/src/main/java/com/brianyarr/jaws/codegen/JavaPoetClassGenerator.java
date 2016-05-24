@@ -1,6 +1,6 @@
-package com.brianyarr.awssdkutil.codegen;
+package com.brianyarr.jaws.codegen;
 
-import com.brianyarr.aws.RequestUtil;
+import com.brianyarr.jaws.RequestUtil;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;

@@ -1,4 +1,4 @@
-package com.brianyarr.awssdkutil.codegen;
+package com.brianyarr.jaws.codegen;
 
 import java.io.IOException;
 import java.lang.reflect.Method;

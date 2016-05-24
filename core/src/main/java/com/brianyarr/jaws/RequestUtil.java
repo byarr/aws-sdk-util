@@ -1,4 +1,4 @@
-package com.brianyarr.aws;
+package com.brianyarr.jaws;
 
 import java.util.Iterator;
 import java.util.Spliterator;

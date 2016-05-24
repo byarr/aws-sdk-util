@@ -1,4 +1,4 @@
-package com.brianyarr.aws.region;
+package com.brianyarr.jaws.region;
 
 import com.amazonaws.auth.profile.internal.AbstractProfilesConfigFileScanner;
 import com.amazonaws.regions.Regions;

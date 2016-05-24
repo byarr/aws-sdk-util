@@ -1,4 +1,4 @@
-package com.brianyarr.aws;
+package com.brianyarr.jaws;
 
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;

@@ -1,4 +1,4 @@
-package com.brianyarr.aws;
+package com.brianyarr.jaws;
 
 import org.junit.Test;
 import org.mockito.InOrder;
