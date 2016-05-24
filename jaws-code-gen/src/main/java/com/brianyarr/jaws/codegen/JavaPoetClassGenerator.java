@@ -4,6 +4,7 @@ import com.brianyarr.jaws.RequestUtil;
 import com.squareup.javapoet.*;
 
 import javax.lang.model.element.Modifier;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -16,9 +17,15 @@ import java.util.stream.Stream;
 public class JavaPoetClassGenerator implements ClassGenerator {
 
     private static final Class<RequestUtil> REQUEST_UTIL_CLASS = RequestUtil.class;
+    private final File outputDir;
 
     private TypeSpec.Builder classBuilder;
     private FieldSpec delegate;
+
+    public JavaPoetClassGenerator(final File outputDir) {
+        this.outputDir = outputDir;
+    }
+
 
     @Override
     public void createClass(final String name, final Class<?> serviceInterface) {
@@ -76,6 +83,11 @@ public class JavaPoetClassGenerator implements ClassGenerator {
         JavaFile javaFile = JavaFile.builder("com.brianyarr.aws", classBuilder.build())
                 .build();
 
-        javaFile.writeTo(System.out);
+        if (outputDir == null) {
+            javaFile.writeTo(System.out);
+        } else {
+            javaFile.writeTo(outputDir);
+        }
+
     }
 }

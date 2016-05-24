@@ -107,7 +107,7 @@ public class ServiceGenerator {
     }
 
     public static void main(String[] args) throws IOException {
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(), AWSLambda.class);
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(null), AWSLambda.class);
         serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
     }

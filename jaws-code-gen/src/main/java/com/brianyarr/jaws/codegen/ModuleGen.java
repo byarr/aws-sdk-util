@@ -31,7 +31,7 @@ public class ModuleGen {
             final File genSrcDir = new File(moduleDir, "src/gen/java");
             genSrcDir.mkdirs();
 
-            final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(), serviceInterface);
+            final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface);
             serviceGenerator.tryAddAllMethods();
             serviceGenerator.build();
         }
@@ -56,7 +56,13 @@ public class ModuleGen {
     }
 
     private String getGradleFile(final String awsModuleName) {
-        return "dependencies {\n" +
+        return "sourceSets {\n" +
+                "   generated{\n" +
+                "        java.srcDir \"${buildDir}/src/gen/java/\"\n" +
+                "    }\n" +
+                "}\n" +
+                "\n" +
+                "dependencies {\n" +
                 "    compile 'com.amazonaws:aws-java-sdk-" + awsModuleName + "'\n" +
                 "}";
     }
