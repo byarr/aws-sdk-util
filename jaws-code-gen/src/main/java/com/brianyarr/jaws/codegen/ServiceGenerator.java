@@ -15,11 +15,11 @@ public class ServiceGenerator {
     private final ClassGenerator classGenerator;
     private final Class<?> serviceInterface;
 
-    public ServiceGenerator(final ClassGenerator classGenerator, final Class<?> serviceInterface) {
+    public ServiceGenerator(final ClassGenerator classGenerator, final Class<?> serviceInterface, final String packageName) {
         this.serviceInterface = serviceInterface;
         final String name = generateName(serviceInterface);
         this.classGenerator = classGenerator;
-        classGenerator.createClass(name, serviceInterface);
+        classGenerator.createClass(name, packageName, serviceInterface);
     }
 
     private static String generateName(final Class<?> serviceInterface) {
@@ -107,7 +107,7 @@ public class ServiceGenerator {
     }
 
     public static void main(String[] args) throws IOException {
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(null), AWSLambda.class);
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(null), AWSLambda.class, "com.brianyarr.aws");
         serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
     }

@@ -31,7 +31,7 @@ public class ModuleGen {
             final File genSrcDir = new File(moduleDir, "src/gen/java");
             genSrcDir.mkdirs();
 
-            final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface);
+            final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, "com.brianyarr.jaws." + awsModuleName);
             serviceGenerator.tryAddAllMethods();
             serviceGenerator.build();
         }

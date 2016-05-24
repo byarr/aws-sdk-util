@@ -20,10 +20,10 @@ public class ServiceGeneratorTest {
         final Method resultCollectionMethod = ListAliasesResult.class.getMethod("getAliases");
 
         final ClassGenerator classGenerator = Mockito.mock(ClassGenerator.class);
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(classGenerator, serviceInterface);
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(classGenerator, serviceInterface, "test");
         serviceGenerator.addMethod(testMethod);
 
-        Mockito.verify(classGenerator).createClass("Lambda", serviceInterface);
+        Mockito.verify(classGenerator).createClass("Lambda", "test", serviceInterface);
         Mockito.verify(classGenerator).addMethod("listAliases", ListAliasesResult.class, ListAliasesRequest.class, getTokenMethod, withTokenMethod, resultCollectionMethod);
 
 

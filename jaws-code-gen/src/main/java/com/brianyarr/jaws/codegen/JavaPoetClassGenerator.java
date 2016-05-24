@@ -21,6 +21,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
 
     private TypeSpec.Builder classBuilder;
     private FieldSpec delegate;
+    private String packageName = "com.brianyarr.aws";
 
     public JavaPoetClassGenerator(final File outputDir) {
         this.outputDir = outputDir;
@@ -28,7 +29,8 @@ public class JavaPoetClassGenerator implements ClassGenerator {
 
 
     @Override
-    public void createClass(final String name, final Class<?> serviceInterface) {
+    public void createClass(final String name, final String packageName, final Class<?> serviceInterface) {
+        this.packageName = packageName;
         classBuilder = TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
         delegate = FieldSpec.builder(serviceInterface, "delegate", Modifier.PRIVATE, Modifier.FINAL).build();
         classBuilder.addField(delegate);
@@ -80,7 +82,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
 
     @Override
     public void build() throws IOException {
-        JavaFile javaFile = JavaFile.builder("com.brianyarr.aws", classBuilder.build())
+        JavaFile javaFile = JavaFile.builder(packageName, classBuilder.build())
                 .build();
 
         if (outputDir == null) {
