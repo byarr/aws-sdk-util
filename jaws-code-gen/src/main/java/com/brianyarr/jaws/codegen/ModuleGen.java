@@ -56,15 +56,18 @@ public class ModuleGen {
     }
 
     private String getGradleFile(final String awsModuleName) {
-        return "sourceSets {\n" +
-                "   generated{\n" +
-                "        java.srcDir \"${buildDir}/src/gen/java/\"\n" +
+        return String.format("sourceSets {\n" +
+                "    gen {\n" +
+                "        java {\n" +
+                "            srcDir '${build}/src/gen/java'\n" +
+                "        }\n" +
                 "    }\n" +
                 "}\n" +
                 "\n" +
                 "dependencies {\n" +
-                "    compile 'com.amazonaws:aws-java-sdk-" + awsModuleName + "'\n" +
-                "}";
+                "    compile project(':jaws-core')\n" +
+                "    compile 'com.amazonaws:aws-java-sdk-%s'\n" +
+                "}", awsModuleName);
     }
 
     public static void main(String[] args) throws IOException {
