@@ -63,6 +63,8 @@ public class ModuleGen {
                 "}\n" +
                 "\n" +
                 "dependencies {\n" +
+                "    compile project(':jaws-core')\n" +
+                "    compile 'com.amazonaws:aws-java-sdk-%s'\n" +
                 "    genCompile project(':jaws-core')\n" +
                 "    genCompile 'com.amazonaws:aws-java-sdk-%s'\n" +
                 "}", awsModuleName);
