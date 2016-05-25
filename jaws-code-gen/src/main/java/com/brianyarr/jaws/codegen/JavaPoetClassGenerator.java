@@ -40,8 +40,8 @@ public class JavaPoetClassGenerator implements ClassGenerator {
     private void addConstructor(final Class<?> serviceInterface) {
         final MethodSpec constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(serviceInterface, "delegate")
-                .addStatement("this.$N = $N", "delegate", "delegate")
+                .addParameter(serviceInterface, "delegate", Modifier.FINAL)
+                .addStatement("this.$N = $N", delegate, "delegate")
                 .build();
         classBuilder.addMethod(constructor);
     }
