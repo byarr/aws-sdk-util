@@ -1,6 +1,7 @@
 package com.brianyarr.jaws.codegen;
 
 import com.amazonaws.services.lambda.AWSLambda;
+import com.amazonaws.services.sns.AmazonSNS;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,8 +45,10 @@ public class ModuleGen {
     private static String getAwsModuleName(final Class<?> serviceInterface) {
         if (serviceInterface.getSimpleName().startsWith("AWS")) {
             return serviceInterface.getSimpleName().substring(3).toLowerCase();
+        } else if (serviceInterface.getSimpleName().startsWith("Amazon")) {
+            return serviceInterface.getSimpleName().substring(6).toLowerCase();
         }
-        return null;
+        throw new IllegalArgumentException("Can't autogenerate AWS module name for " + serviceInterface.getSimpleName());
     }
 
     private void updateGradleSettings(final String moduleName) throws IOException {
@@ -77,6 +80,7 @@ public class ModuleGen {
     public static void main(String[] args) throws IOException {
         final ModuleGen moduleGen = new ModuleGen(new File("/Users/brian.yarr/code/jaws/"));
         moduleGen.generateModule(AWSLambda.class);
+        moduleGen.generateModule(AmazonSNS.class);
     }
 
 }
