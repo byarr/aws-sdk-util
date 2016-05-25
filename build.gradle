@@ -21,6 +21,10 @@ subprojects {
         targetCompatibility = 1.8
     }
 
+    findbugs {
+        ignoreFailures = true
+    }
+
     tasks.withType(FindBugs) {
         reports {
             xml.enabled = false
