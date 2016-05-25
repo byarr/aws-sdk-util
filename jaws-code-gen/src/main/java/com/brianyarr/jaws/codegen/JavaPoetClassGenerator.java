@@ -22,6 +22,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
     private TypeSpec.Builder classBuilder;
     private FieldSpec delegate;
     private String packageName = "com.brianyarr.aws";
+    private Class<?> serviceInterface;
 
     public JavaPoetClassGenerator(final File outputDir) {
         this.outputDir = outputDir;
@@ -31,6 +32,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
     @Override
     public void createClass(final String name, final String packageName, final Class<?> serviceInterface) {
         this.packageName = packageName;
+        this.serviceInterface = serviceInterface;
         classBuilder = TypeSpec.classBuilder(name).addModifiers(Modifier.PUBLIC);
         delegate = FieldSpec.builder(serviceInterface, "delegate", Modifier.PRIVATE, Modifier.FINAL).build();
         classBuilder.addField(delegate);
@@ -75,6 +77,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
                 .addParameter(request)
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement(methodBody.toString(), params.toArray())
+                .addJavadoc("Streamier version of {@link $T#$N($T))}\n", serviceInterface, name, requestType)
                 .build();
 
         classBuilder.addMethod(methodSpec);
