@@ -27,14 +27,18 @@ public class ModuleGen {
             moduleDir.mkdir();
             writeGradleFile(moduleDir, awsModuleName);
             updateGradleSettings(moduleName);
-
-            final File genSrcDir = new File(moduleDir, "src/gen/java");
-            genSrcDir.mkdirs();
-
-            final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, "com.brianyarr.jaws." + awsModuleName);
-            serviceGenerator.tryAddAllMethods();
-            serviceGenerator.build();
         }
+
+        final File genSrcDir = new File(moduleDir, "src/gen/java");
+        if (genSrcDir.exists()) {
+            genSrcDir.delete();
+        }
+        genSrcDir.mkdirs();
+
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, "com.brianyarr.jaws." + awsModuleName);
+        serviceGenerator.tryAddAllMethods();
+        serviceGenerator.build();
+
     }
 
     private static String getAwsModuleName(final Class<?> serviceInterface) {
