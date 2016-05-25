@@ -59,12 +59,10 @@ public class ModuleGen {
 
     private void updateGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
-        if (Files.lines(file.toPath()).anyMatch(l -> l.contains(moduleName))) {
+        if (!Files.lines(file.toPath()).anyMatch(l -> l.contains(moduleName))) {
             // already has module name
-        } else {
             Files.write(file.toPath(), (", '" + moduleName + "'").getBytes(), APPEND);
         }
-
     }
 
     private void writeGradleFile(final File moduleDir, final String awsModuleName) throws IOException {
