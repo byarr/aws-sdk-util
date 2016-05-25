@@ -17,20 +17,9 @@ public class ServiceGenerator {
 
     public ServiceGenerator(final ClassGenerator classGenerator, final Class<?> serviceInterface, final String packageName) {
         this.serviceInterface = serviceInterface;
-        final String name = generateName(serviceInterface);
+        final String name = Util.getAwsModuleName(serviceInterface);
         this.classGenerator = classGenerator;
         classGenerator.createClass(name, packageName, serviceInterface);
-    }
-
-    private static String generateName(final Class<?> serviceInterface) {
-        final String name;
-        if (serviceInterface.getSimpleName().startsWith("AWS")) {
-            name = serviceInterface.getSimpleName().substring(3);
-        }
-        else {
-            name = serviceInterface.getSimpleName() + "Util";
-        }
-        return name;
     }
 
     public void addMethod(final Method method) {

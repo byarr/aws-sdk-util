@@ -20,7 +20,7 @@ public class ModuleGen {
 
     public void generateModule(final Class<?> serviceInterface) throws IOException {
 
-        final String awsModuleName = getAwsModuleName(serviceInterface);
+        final String awsModuleName = Util.getAwsModuleName(serviceInterface).toLowerCase();
 
         final String moduleName = "jaws-" + awsModuleName;
         final File moduleDir = new File(rootDir, moduleName);
@@ -40,15 +40,6 @@ public class ModuleGen {
         serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
 
-    }
-
-    private static String getAwsModuleName(final Class<?> serviceInterface) {
-        if (serviceInterface.getSimpleName().startsWith("AWS")) {
-            return serviceInterface.getSimpleName().substring(3).toLowerCase();
-        } else if (serviceInterface.getSimpleName().startsWith("Amazon")) {
-            return serviceInterface.getSimpleName().substring(6).toLowerCase();
-        }
-        throw new IllegalArgumentException("Can't autogenerate AWS module name for " + serviceInterface.getSimpleName());
     }
 
     private void updateGradleSettings(final String moduleName) throws IOException {
