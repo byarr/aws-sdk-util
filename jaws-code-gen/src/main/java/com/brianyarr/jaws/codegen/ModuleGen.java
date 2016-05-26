@@ -1,6 +1,7 @@
 package com.brianyarr.jaws.codegen;
 
 import com.amazonaws.services.apigateway.AmazonApiGateway;
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.sns.AmazonSNS;
 import org.apache.commons.io.FileUtils;
@@ -99,9 +100,8 @@ public class ModuleGen {
         moduleGen.generateModule(AWSLambda.class);
         moduleGen.generateModule(AmazonSNS.class);
         moduleGen.generateModule(AmazonApiGateway.class, "api-gateway");
+        moduleGen.generateModule(AmazonCloudWatch.class, "cloudwatchmetrics");
 
-//        moduleGen.cleanModule(AWSLambda.class);
-//        moduleGen.cleanModule(AmazonSNS.class);
     }
 
 }
