@@ -1,5 +1,8 @@
 package com.brianyarr.jaws.codegen;
 
+import com.amazonaws.services.apigateway.AmazonApiGateway;
+import com.amazonaws.services.apigateway.model.GetResourcesRequest;
+import com.amazonaws.services.apigateway.model.GetResourcesResult;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.model.ListAliasesRequest;
 import com.amazonaws.services.lambda.model.ListAliasesResult;
@@ -7,6 +10,8 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.lang.reflect.Method;
+
+import static org.mockito.Mockito.*;
 
 public class ServiceGeneratorTest {
 
@@ -19,14 +24,29 @@ public class ServiceGeneratorTest {
         final Method withTokenMethod = ListAliasesRequest.class.getMethod("withMarker", String.class);
         final Method resultCollectionMethod = ListAliasesResult.class.getMethod("getAliases");
 
-        final ClassGenerator classGenerator = Mockito.mock(ClassGenerator.class);
+        final ClassGenerator classGenerator = mock(ClassGenerator.class);
         final ServiceGenerator serviceGenerator = new ServiceGenerator(classGenerator, serviceInterface, "test");
         serviceGenerator.addMethod(testMethod);
 
-        Mockito.verify(classGenerator).createClass("Lambda", "test", serviceInterface);
-        Mockito.verify(classGenerator).addMethod("listAliases", ListAliasesResult.class, ListAliasesRequest.class, getTokenMethod, withTokenMethod, resultCollectionMethod);
+        verify(classGenerator).createClass("Lambda", "test", serviceInterface);
+        verify(classGenerator).addMethod("listAliases", ListAliasesResult.class, ListAliasesRequest.class, getTokenMethod, withTokenMethod, resultCollectionMethod);
+    }
 
+    @Test
+    public void shouldWorkForApiGateway() throws NoSuchMethodException {
+        final Class<AmazonApiGateway> serviceInterface = AmazonApiGateway.class;
+        final Method testMethod = serviceInterface.getMethod("getResources", GetResourcesRequest.class);
 
+        final Method getTokenMethod = GetResourcesResult.class.getMethod("getPosition");
+        final Method withTokenMethod = GetResourcesRequest.class.getMethod("withPosition", String.class);
+        final Method resultCollectionMethod = GetResourcesResult.class.getMethod("getItems");
+
+        final ClassGenerator classGenerator = mock(ClassGenerator.class);
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(classGenerator, serviceInterface, "test");
+        serviceGenerator.addMethod(testMethod);
+
+        verify(classGenerator).createClass("ApiGateway", "test", serviceInterface);
+        verify(classGenerator).addMethod("getResources", GetResourcesResult.class, GetResourcesRequest.class, getTokenMethod, withTokenMethod, resultCollectionMethod);
     }
 
 }

@@ -15,6 +15,8 @@ public class ServiceGenerator {
     private final ClassGenerator classGenerator;
     private final Class<?> serviceInterface;
 
+    private static final String[] MARKER_NAMES = {"Marker", "Token", "Position"};
+
     public ServiceGenerator(final ClassGenerator classGenerator, final Class<?> serviceInterface, final String packageName) {
         this.serviceInterface = serviceInterface;
         final String name = Util.getAwsModuleName(serviceInterface);
@@ -46,7 +48,7 @@ public class ServiceGenerator {
         final List<Method> candidates = Arrays.stream(responseType.getDeclaredMethods())
                 .filter(m -> m.getName().startsWith("get")) //should be called getX
                 .filter(m -> m.getReturnType().isAssignableFrom(String.class)) // should return a string (not always actually)
-                .filter(m -> m.getName().contains("Marker") || m.getName().contains("Token"))
+                .filter(ServiceGenerator::isMarkerMethod)
                 .collect(toList());
         if (candidates.size() == 1) {
             return candidates.get(0);
@@ -60,7 +62,7 @@ public class ServiceGenerator {
         final List<Method> candidates = Arrays.stream(requestType.getDeclaredMethods())
                 .filter(m -> m.getName().startsWith("with")) //should be called getX
                 .filter(m -> m.getReturnType().isAssignableFrom(requestType)) // should check param)
-                .filter(m -> m.getName().contains("Marker") || m.getName().contains("Token"))
+                .filter(ServiceGenerator::isMarkerMethod)
                 .collect(toList());
         if (candidates.size() == 1) {
             return candidates.get(0);
@@ -93,6 +95,10 @@ public class ServiceGenerator {
                 System.out.println("Failed to add method '" + method.getName() + "', " + ex.getMessage());
             }
         });
+    }
+
+    private static boolean isMarkerMethod(final Method method) {
+        return Arrays.stream(MARKER_NAMES).anyMatch(marker -> method.getName().contains(marker));
     }
 
     public static void main(String[] args) throws IOException {
