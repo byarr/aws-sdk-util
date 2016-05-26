@@ -1,5 +1,6 @@
 package com.brianyarr.jaws.codegen;
 
+import com.amazonaws.services.apigateway.AmazonApiGateway;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.sns.AmazonSNS;
 import org.apache.commons.io.FileUtils;
@@ -24,6 +25,10 @@ public class ModuleGen {
 
         final String awsModuleName = Util.getAwsModuleName(serviceInterface).toLowerCase();
 
+        generateModule(serviceInterface, awsModuleName);
+    }
+
+    private void generateModule(final Class<?> serviceInterface, final String awsModuleName) throws IOException {
         final String moduleName = "jaws-" + awsModuleName;
         final File moduleDir = new File(rootDir, moduleName);
         if (!moduleDir.exists()) {
@@ -40,10 +45,10 @@ public class ModuleGen {
             genSrcDir.mkdirs();
         }
 
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, "com.brianyarr.jaws." + awsModuleName);
+        final String packageName = "com.brianyarr.jaws." + awsModuleName.replace("-", "");
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, packageName);
         serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
-
     }
 
     public void cleanModule(final Class<?> serviceInterface) throws IOException {
@@ -93,6 +98,7 @@ public class ModuleGen {
         final ModuleGen moduleGen = new ModuleGen(new File("/Users/brian.yarr/code/jaws/"));
         moduleGen.generateModule(AWSLambda.class);
         moduleGen.generateModule(AmazonSNS.class);
+        moduleGen.generateModule(AmazonApiGateway.class, "api-gateway");
 
 //        moduleGen.cleanModule(AWSLambda.class);
 //        moduleGen.cleanModule(AmazonSNS.class);
