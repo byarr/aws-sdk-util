@@ -97,11 +97,9 @@ public class ModuleGen {
 
     public static void main(String[] args) throws IOException {
         final ModuleGen moduleGen = new ModuleGen(new File("/Users/brian.yarr/code/jaws/"));
-        moduleGen.generateModule(AWSLambda.class);
-        moduleGen.generateModule(AmazonSNS.class);
-        moduleGen.generateModule(AmazonApiGateway.class, "api-gateway");
-        moduleGen.generateModule(AmazonCloudWatch.class, "cloudwatchmetrics");
-
+        for (Modules.Module m : Modules.MODULES) {
+            moduleGen.generateModule(m.serviceInterface, m.awsModuleName);
+        }
     }
 
 }
