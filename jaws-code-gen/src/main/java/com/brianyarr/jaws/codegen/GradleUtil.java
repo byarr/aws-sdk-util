@@ -2,7 +2,7 @@ package com.brianyarr.jaws.codegen;
 
 import java.util.Optional;
 
-public class GradeUtil {
+public class GradleUtil {
 
     public static String removeModuleFromSettings(final String settingsFileContents, final String moduleName) {
         String result = settingsFileContents.replaceAll("'" + moduleName + "',?\\s*", "");

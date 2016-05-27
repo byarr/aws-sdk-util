@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 
-import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 public class ModuleGen {
@@ -58,7 +57,7 @@ public class ModuleGen {
     private void updateGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
         final String contents = Files.lines(file.toPath()).collect(Collectors.joining("\n"));
-        GradeUtil.ensureModuleInSettings(contents, moduleName).ifPresent(s -> {
+        GradleUtil.ensureModuleInSettings(contents, moduleName).ifPresent(s -> {
             try {
                 Files.write(file.toPath(), s.getBytes(), CREATE_NEW);
             } catch (IOException e) {
@@ -71,7 +70,7 @@ public class ModuleGen {
     private void removeFromGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
         final String regex = "'" + moduleName + "',?";
-        final String newContents = Files.readAllLines(file.toPath()).stream().map(l -> GradeUtil.removeModuleFromSettings(l, moduleName)).collect(Collectors.joining("\n"));
+        final String newContents = Files.readAllLines(file.toPath()).stream().map(l -> GradleUtil.removeModuleFromSettings(l, moduleName)).collect(Collectors.joining("\n"));
         Files.write(file.toPath(), newContents.getBytes());
     }
 

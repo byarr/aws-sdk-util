@@ -1,18 +1,17 @@
 package com.brianyarr.jaws.codegen;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-public class GradeUtilTest {
+public class GradleUtilTest {
 
     @Test
     public void shouldDoNothingIfNotPresent() {
         final String contents = "include 'module1', 'module2', 'module3'";
 
-        final String result = GradeUtil.removeModuleFromSettings(contents, "module4");
+        final String result = GradleUtil.removeModuleFromSettings(contents, "module4");
 
         assertThat(result, is(equalTo(contents)));
     }
@@ -21,7 +20,7 @@ public class GradeUtilTest {
     public void shouldRemoveFromStartOfImports() {
         final String contents = "include 'module1', 'module2', 'module3'";
 
-        final String result = GradeUtil.removeModuleFromSettings(contents, "module1");
+        final String result = GradleUtil.removeModuleFromSettings(contents, "module1");
 
         assertThat(result, is(equalTo("include 'module2', 'module3'")));
     }
@@ -30,7 +29,7 @@ public class GradeUtilTest {
     public void shouldRemoveFromMiddleOfImports() {
         final String contents = "include 'module1', 'module2', 'module3'";
 
-        final String result = GradeUtil.removeModuleFromSettings(contents, "module2");
+        final String result = GradleUtil.removeModuleFromSettings(contents, "module2");
 
         assertThat(result, is(equalTo("include 'module1', 'module3'")));
     }
@@ -39,7 +38,7 @@ public class GradeUtilTest {
     public void shouldRemoveFromEndOfImports() {
         final String contents = "include 'module1', 'module2', 'module3'";
 
-        final String result = GradeUtil.removeModuleFromSettings(contents, "module3");
+        final String result = GradleUtil.removeModuleFromSettings(contents, "module3");
 
         assertThat(result, is(equalTo("include 'module1', 'module2'")));
     }
