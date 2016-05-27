@@ -57,10 +57,15 @@ public class ModuleGen {
 
     private void updateGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
-        if (!Files.lines(file.toPath()).anyMatch(l -> l.contains(moduleName))) {
-            // already has module name
-            Files.write(file.toPath(), (", '" + moduleName + "'").getBytes(), APPEND);
-        }
+        final String contents = Files.lines(file.toPath()).collect(Collectors.joining("\n"));
+        GradeUtil.ensureModuleInSettings(contents, moduleName).ifPresent(s -> {
+            try {
+                Files.write(file.toPath(), s.getBytes(), CREATE_NEW);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
     }
 
     private void removeFromGradleSettings(final String moduleName) throws IOException {
