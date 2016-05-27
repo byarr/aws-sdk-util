@@ -5,6 +5,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
@@ -45,15 +46,13 @@ public class ModuleGen {
         serviceGenerator.build();
     }
 
-    public void cleanModule(final Class<?> serviceInterface) throws IOException {
-        final String awsModuleName = Util.getAwsModuleName(serviceInterface).toLowerCase();
-
-        final String moduleName = "jaws-" + awsModuleName;
+    public void cleanModule(final Modules.Module module) throws IOException {
+        final String moduleName = "jaws-" + module.awsModuleName;
         final File moduleDir = new File(rootDir, moduleName);
         if (moduleDir.exists()) {
             FileUtils.cleanDirectory(moduleDir);
         }
-
+        removeFromGradleSettings(moduleName);
     }
 
     private void updateGradleSettings(final String moduleName) throws IOException {
@@ -62,6 +61,13 @@ public class ModuleGen {
             // already has module name
             Files.write(file.toPath(), (", '" + moduleName + "'").getBytes(), APPEND);
         }
+    }
+
+    private void removeFromGradleSettings(final String moduleName) throws IOException {
+        final File file = new File(rootDir, "settings.gradle");
+        final String regex = "'" + moduleName + "',?";
+        final String newContents = Files.readAllLines(file.toPath()).stream().map(l -> GradeUtil.removeModuleFromSettings(l, moduleName)).collect(Collectors.joining("\n"));
+        Files.write(file.toPath(), newContents.getBytes());
     }
 
     private void writeGradleFile(final File moduleDir, final String awsModuleName) throws IOException {
