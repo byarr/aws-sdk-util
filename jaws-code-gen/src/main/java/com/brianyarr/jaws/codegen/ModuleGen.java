@@ -1,9 +1,5 @@
 package com.brianyarr.jaws.codegen;
 
-import com.amazonaws.services.apigateway.AmazonApiGateway;
-import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
-import com.amazonaws.services.lambda.AWSLambda;
-import com.amazonaws.services.sns.AmazonSNS;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -22,11 +18,8 @@ public class ModuleGen {
         this.rootDir = rootDir;
     }
 
-    public void generateModule(final Class<?> serviceInterface) throws IOException {
-
-        final String awsModuleName = Util.getAwsModuleName(serviceInterface).toLowerCase();
-
-        generateModule(serviceInterface, awsModuleName);
+    public void generateModule(final Modules.Module module) throws IOException {
+        generateModule(module.serviceInterface, module.awsModuleName);
     }
 
     private void generateModule(final Class<?> serviceInterface, final String awsModuleName) throws IOException {
@@ -98,7 +91,7 @@ public class ModuleGen {
     public static void main(String[] args) throws IOException {
         final ModuleGen moduleGen = new ModuleGen(new File("/Users/brian.yarr/code/jaws/"));
         for (Modules.Module m : Modules.MODULES) {
-            moduleGen.generateModule(m.serviceInterface, m.awsModuleName);
+            moduleGen.generateModule(m);
         }
     }
 
