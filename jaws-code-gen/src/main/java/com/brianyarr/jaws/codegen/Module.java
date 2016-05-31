@@ -5,7 +5,7 @@ import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.sns.AmazonSNS;
 
-public class Modules {
+public class Module {
 
     public static Module[] MODULES = {
             of(AWSLambda.class),
@@ -15,15 +15,12 @@ public class Modules {
     };
 
 
-    public static class Module {
-        final Class<?> serviceInterface;
-        final String awsModuleName;
+    public final Class<?> serviceInterface;
+    public final String awsModuleName;
 
-        public Module(final Class<?> serviceInterface, final String awsModuleName) {
-            this.serviceInterface = serviceInterface;
-            this.awsModuleName = awsModuleName;
-        }
-
+    public Module(final Class<?> serviceInterface, final String awsModuleName) {
+        this.serviceInterface = serviceInterface;
+        this.awsModuleName = awsModuleName;
     }
 
     private static Module of(final Class<?> clazz) {

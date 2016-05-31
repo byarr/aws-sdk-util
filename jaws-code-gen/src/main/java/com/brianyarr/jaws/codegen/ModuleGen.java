@@ -18,7 +18,7 @@ public class ModuleGen {
         this.rootDir = rootDir;
     }
 
-    public void generateModule(final Modules.Module module) throws IOException {
+    public void generateModule(final Module module) throws IOException {
         generateModule(module.serviceInterface, module.awsModuleName);
     }
 
@@ -45,7 +45,7 @@ public class ModuleGen {
         serviceGenerator.build();
     }
 
-    public void cleanModule(final Modules.Module module) throws IOException {
+    public void cleanModule(final Module module) throws IOException {
         final String moduleName = "jaws-" + module.awsModuleName;
         final File moduleDir = new File(rootDir, moduleName);
         if (moduleDir.exists()) {
@@ -100,7 +100,7 @@ public class ModuleGen {
 
     public static void main(String[] args) throws IOException {
         final ModuleGen moduleGen = new ModuleGen(new File("/Users/brian.yarr/code/jaws/"));
-        for (Modules.Module m : Modules.MODULES) {
+        for (Module m : Module.MODULES) {
             moduleGen.generateModule(m);
         }
     }
