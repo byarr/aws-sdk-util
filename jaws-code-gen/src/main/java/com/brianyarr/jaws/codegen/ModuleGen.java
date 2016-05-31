@@ -5,8 +5,10 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.util.stream.Collectors;
 
+import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
 public class ModuleGen {
@@ -31,6 +33,7 @@ public class ModuleGen {
 
         writeGradleFile(moduleDir, awsModuleName);
         updateGradleSettings(moduleName);
+        writeGitIgnoreFile(moduleDir);
 
         final File genSrcDir = new File(moduleDir, "src/gen/java");
         if (genSrcDir.exists()) {
@@ -54,12 +57,17 @@ public class ModuleGen {
         removeFromGradleSettings(moduleName);
     }
 
+    private void writeGitIgnoreFile(final File moduleDir) throws IOException {
+        final File ignoreFIle = new File(moduleDir, ".gitignore");
+        Files.write(ignoreFIle.toPath(), "src/gen/".getBytes());
+    }
+
     private void updateGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
         final String contents = Files.lines(file.toPath()).collect(Collectors.joining("\n"));
         GradleUtil.ensureModuleInSettings(contents, moduleName).ifPresent(s -> {
             try {
-                Files.write(file.toPath(), s.getBytes(), CREATE_NEW);
+                Files.write(file.toPath(), s.getBytes(), CREATE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
