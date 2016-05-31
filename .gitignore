@@ -12,3 +12,6 @@ gradle-app.setting
 
 .idea
 *.iml
+
+#jenv settings
+.java-version
