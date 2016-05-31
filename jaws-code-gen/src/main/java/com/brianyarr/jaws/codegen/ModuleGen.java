@@ -5,7 +5,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE;
@@ -25,13 +24,13 @@ public class ModuleGen {
     }
 
     private void generateModule(final Class<?> serviceInterface, final String awsModuleName) throws IOException {
-        final String moduleName = "jaws-" + awsModuleName;
+        final String moduleName = "jaws-" + awsModuleName.toLowerCase();
         final File moduleDir = new File(rootDir, moduleName);
         if (!moduleDir.exists()) {
             moduleDir.mkdir();
         }
 
-        writeGradleFile(moduleDir, awsModuleName);
+        writeGradleFile(moduleDir, awsModuleName.toLowerCase());
         updateGradleSettings(moduleName);
         writeGitIgnoreFile(moduleDir);
 
@@ -42,7 +41,7 @@ public class ModuleGen {
             genSrcDir.mkdirs();
         }
 
-        final String packageName = "com.brianyarr.jaws." + awsModuleName.replace("-", "");
+        final String packageName = "com.brianyarr.jaws." + awsModuleName.toLowerCase().replace("-", "");
         final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, packageName);
         serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
