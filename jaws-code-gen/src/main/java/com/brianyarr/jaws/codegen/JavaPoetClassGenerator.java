@@ -49,7 +49,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
     }
 
     @Override
-    public void addMethod(final String name, final Class<?> responseType, final Class<?> requestType, final Method tokenMethod, final Method setTokenMethod, final Method resultCollectionMethod) {
+    public void addMethod(final String name, final Class<?> responseType, final Class<?> requestType, final Method tokenMethod, final Method setTokenMethod, final Method resultCollectionMethod, final boolean createZeroArgVersion) {
         final ParameterSpec request = ParameterSpec.builder(requestType, "request", Modifier.FINAL).build();
 
         final StringBuilder methodBody = new StringBuilder("return $T.getStream($N::$N, $N, $T::$N, $T::$N)");
@@ -79,8 +79,15 @@ public class JavaPoetClassGenerator implements ClassGenerator {
                 .addStatement(methodBody.toString(), params.toArray())
                 .addJavadoc("Streamier version of {@link $T#$N($T))}\n", serviceInterface, name, requestType)
                 .build();
-
         classBuilder.addMethod(methodSpec);
+
+        if (createZeroArgVersion) {
+            classBuilder.addMethod(
+                    MethodSpec.methodBuilder(name)
+                            .returns(returnType)
+                            .addModifiers(Modifier.PUBLIC)
+                            .addStatement("return $N(new $N())", methodSpec, requestType.getSimpleName()).build());
+        }
     }
 
     @Override

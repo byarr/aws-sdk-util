@@ -3,6 +3,7 @@ package com.brianyarr.jaws.codegen;
 import com.amazonaws.services.lambda.AWSLambda;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +38,17 @@ public class ServiceGenerator {
 
         final Method resultCollectionMethod = getResultCollectionMethod(responseType);
 
-        classGenerator.addMethod(method.getName(),responseType, requestType, tokenMethod, setTokenMethod, resultCollectionMethod);
+        final Method zeroArgMethod = getZeroArgVersion(method);
+
+        classGenerator.addMethod(method.getName(),responseType, requestType, tokenMethod, setTokenMethod, resultCollectionMethod, zeroArgMethod != null);
+    }
+
+    private Method getZeroArgVersion(final Method method) {
+        try {
+            return serviceInterface.getMethod(method.getName());
+        } catch (NoSuchMethodException e) {
+            return null;
+        }
     }
 
     public void build() throws IOException {
