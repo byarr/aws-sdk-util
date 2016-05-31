@@ -25,10 +25,8 @@ public class ModuleGen {
 
     private void generateModule(final Class<?> serviceInterface, final String awsModuleName) throws IOException {
         final String moduleName = "jaws-" + awsModuleName.toLowerCase();
-        final File moduleDir = new File(rootDir, moduleName);
-        if (!moduleDir.exists()) {
-            moduleDir.mkdir();
-        }
+
+        final File moduleDir = createModuleDir(moduleName);
 
         writeGradleFile(moduleDir, awsModuleName.toLowerCase());
         updateGradleSettings(moduleName);
@@ -45,6 +43,14 @@ public class ModuleGen {
         final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, packageName);
         serviceGenerator.tryAddAllMethods();
         serviceGenerator.build();
+    }
+
+    private File createModuleDir(final String moduleName) {
+        final File moduleDir = new File(rootDir, moduleName);
+        if (!moduleDir.exists()) {
+            moduleDir.mkdirs();
+        }
+        return moduleDir;
     }
 
     public void cleanModule(final Module module) throws IOException {
@@ -84,25 +90,8 @@ public class ModuleGen {
     private void writeGradleFile(final File moduleDir, final String awsModuleName) throws IOException {
         final File file = new File(moduleDir, "build.gradle");
         if (!file.exists()) {
-            Files.write(file.toPath(), getGradleFile(awsModuleName).getBytes(), CREATE_NEW);
+            Files.write(file.toPath(), GradleUtil.getGradleFile(awsModuleName).getBytes(), CREATE_NEW);
         }
-    }
-
-    private String getGradleFile(final String awsModuleName) {
-        return String.format("sourceSets {\n" +
-                "    gen {\n" +
-                "        java {\n" +
-                "            srcDir '${build}/src/gen/java'\n" +
-                "        }\n" +
-                "    }\n" +
-                "}\n" +
-                "\n" +
-                "dependencies {\n" +
-                "    compile project(':jaws-core')\n" +
-                "    compile 'com.amazonaws:aws-java-sdk-%s'\n" +
-                "    genCompile project(':jaws-core')\n" +
-                "    genCompile 'com.amazonaws:aws-java-sdk-%s'\n" +
-                "}", awsModuleName, awsModuleName);
     }
 
     public static void main(String[] args) throws IOException {
