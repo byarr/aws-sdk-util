@@ -23,26 +23,33 @@ public class ModuleGen {
         generateModule(module.serviceInterface, module.awsModuleName);
     }
 
+
     private void generateModule(final Class<?> serviceInterface, final String awsModuleName) throws IOException {
         final String moduleName = "jaws-" + awsModuleName.toLowerCase();
-
+        //most steps are idempotent-ish i.e. createModuleDir does nothing if moduleDir already exists
         final File moduleDir = createModuleDir(moduleName);
-
         writeGradleFile(moduleDir, awsModuleName.toLowerCase());
         updateGradleSettings(moduleName);
         writeGitIgnoreFile(moduleDir);
+        final File genSrcDir = createSrcGenJavaDir(moduleDir);
+        generateCode(awsModuleName, genSrcDir, serviceInterface);
+    }
 
+    private void generateCode(final String awsModuleName, final File genSrcDir, final Class<?> serviceInterface) throws IOException {
+        final String packageName = "com.brianyarr.jaws." + awsModuleName.toLowerCase().replace("-", "");
+        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, packageName);
+        serviceGenerator.tryAddAllMethods();
+        serviceGenerator.build();
+    }
+
+    private File createSrcGenJavaDir(final File moduleDir) throws IOException {
         final File genSrcDir = new File(moduleDir, "src/gen/java");
         if (genSrcDir.exists()) {
             FileUtils.cleanDirectory(genSrcDir);
         } else {
             genSrcDir.mkdirs();
         }
-
-        final String packageName = "com.brianyarr.jaws." + awsModuleName.toLowerCase().replace("-", "");
-        final ServiceGenerator serviceGenerator = new ServiceGenerator(new JavaPoetClassGenerator(genSrcDir), serviceInterface, packageName);
-        serviceGenerator.tryAddAllMethods();
-        serviceGenerator.build();
+        return genSrcDir;
     }
 
     private File createModuleDir(final String moduleName) {
