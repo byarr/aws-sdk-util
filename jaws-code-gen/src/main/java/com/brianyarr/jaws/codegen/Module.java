@@ -1,7 +1,9 @@
 package com.brianyarr.jaws.codegen;
 
 import com.amazonaws.services.apigateway.AmazonApiGateway;
+import com.amazonaws.services.autoscaling.AmazonAutoScaling;
 import com.amazonaws.services.cloudwatch.AmazonCloudWatch;
+import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.sns.AmazonSNS;
 
@@ -12,6 +14,8 @@ public class Module {
             of(AmazonSNS.class),
             of(AmazonApiGateway.class, "api-gateway"),
             of(AmazonCloudWatch.class, "cloudwatchmetrics"),
+            of(AmazonEC2.class),
+            of(AmazonAutoScaling.class)
     };
 
 

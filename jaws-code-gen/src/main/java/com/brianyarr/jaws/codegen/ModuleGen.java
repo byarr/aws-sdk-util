@@ -102,7 +102,7 @@ public class ModuleGen {
     }
 
     public static void main(String[] args) throws IOException {
-        final ModuleGen moduleGen = new ModuleGen(new File("/Users/brian.yarr/code/jaws/"));
+        final ModuleGen moduleGen = new ModuleGen(new File("."));
         for (Module m : Module.MODULES) {
             moduleGen.generateModule(m);
         }
