@@ -77,7 +77,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
                 .addParameter(request)
                 .addModifiers(Modifier.PUBLIC)
                 .addStatement(methodBody.toString(), params.toArray())
-                .addJavadoc("Streamier version of {@link $T#$N($T)}\n", serviceInterface, name, requestType)
+                .addJavadoc("Streamier version of {@link $T#$N($T)}.\n", serviceInterface, name, requestType)
                 .build();
         classBuilder.addMethod(methodSpec);
 
