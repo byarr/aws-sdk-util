@@ -93,6 +93,7 @@ public class JavaPoetClassGenerator implements ClassGenerator {
     @Override
     public void build() throws IOException {
         JavaFile javaFile = JavaFile.builder(packageName, classBuilder.build())
+                .indent("    ")
                 .build();
 
         if (outputDir == null) {
