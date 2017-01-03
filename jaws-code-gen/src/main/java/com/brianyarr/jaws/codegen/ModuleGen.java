@@ -1,9 +1,12 @@
 package com.brianyarr.jaws.codegen;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.stream.Collectors;
 
@@ -77,7 +80,7 @@ public class ModuleGen {
 
     private void writeGitIgnoreFile(final File moduleDir) throws IOException {
         final File ignoreFIle = new File(moduleDir, ".gitignore");
-        Files.write(ignoreFIle.toPath(), "src/gen/".getBytes());
+        Files.write(ignoreFIle.toPath(), "src/gen/".getBytes(StandardCharsets.UTF_8));
     }
 
     private void updateGradleSettings(final String moduleName) throws IOException {
@@ -96,13 +99,13 @@ public class ModuleGen {
     private void removeFromGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
         final String newContents = Files.readAllLines(file.toPath()).stream().map(l -> GradleUtil.removeModuleFromSettings(l, moduleName)).collect(Collectors.joining("\n"));
-        Files.write(file.toPath(), newContents.getBytes());
+        Files.write(file.toPath(), newContents.getBytes(StandardCharsets.UTF_8));
     }
 
     private void writeGradleFile(final File moduleDir, final String awsModuleName) throws IOException {
         final File file = new File(moduleDir, "build.gradle");
         if (!file.exists()) {
-            Files.write(file.toPath(), GradleUtil.getGradleFile(awsModuleName).getBytes(), CREATE_NEW);
+            Files.write(file.toPath(), GradleUtil.getGradleFile(awsModuleName).getBytes(StandardCharsets.UTF_8), CREATE_NEW);
         }
     }
 
