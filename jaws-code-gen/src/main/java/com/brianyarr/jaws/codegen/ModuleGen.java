@@ -95,7 +95,6 @@ public class ModuleGen {
 
     private void removeFromGradleSettings(final String moduleName) throws IOException {
         final File file = new File(rootDir, "settings.gradle");
-        final String regex = "'" + moduleName + "',?";
         final String newContents = Files.readAllLines(file.toPath()).stream().map(l -> GradleUtil.removeModuleFromSettings(l, moduleName)).collect(Collectors.joining("\n"));
         Files.write(file.toPath(), newContents.getBytes());
     }
