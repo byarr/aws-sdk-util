@@ -47,7 +47,10 @@ public class ModuleGen {
         if (genSrcDir.exists()) {
             FileUtils.cleanDirectory(genSrcDir);
         } else {
-            genSrcDir.mkdirs();
+            final boolean result = genSrcDir.mkdirs();
+            if (!result) {
+                throw new RuntimeException("Failed to create direction: " + genSrcDir.getAbsolutePath());
+            }
         }
         return genSrcDir;
     }
@@ -55,7 +58,10 @@ public class ModuleGen {
     private File createModuleDir(final String moduleName) {
         final File moduleDir = new File(rootDir, moduleName);
         if (!moduleDir.exists()) {
-            moduleDir.mkdirs();
+            final boolean result = moduleDir.mkdirs();
+            if (!result) {
+                throw new RuntimeException("Failed to create direction: " + moduleDir.getAbsolutePath());
+            }
         }
         return moduleDir;
     }
