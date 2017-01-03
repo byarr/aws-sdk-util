@@ -1,4 +1,4 @@
-group = 'com.brianyarr.aws-sdk-util'
+group = 'com.brianyarr.jaws'
 
 buildscript {
     repositories {
