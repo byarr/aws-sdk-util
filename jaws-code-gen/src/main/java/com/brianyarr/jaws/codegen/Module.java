@@ -9,7 +9,7 @@ import com.amazonaws.services.sns.AmazonSNS;
 
 public class Module {
 
-    public static Module[] MODULES = {
+    final static Module[] MODULES = {
             of(AWSLambda.class),
             of(AmazonSNS.class),
             of(AmazonApiGateway.class, "api-gateway"),
