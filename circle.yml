@@ -4,3 +4,5 @@ machine:
 test:
   override:
     - ./gradlew build
+  post:
+    - rsync -aR */build/reports/ $CIRCLE_ARTIFACTS
