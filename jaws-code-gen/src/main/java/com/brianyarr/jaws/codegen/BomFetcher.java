@@ -15,6 +15,9 @@ import java.util.List;
 
 public class BomFetcher {
 
+    public static final String AWS_GROUP_ID = "com.amazonaws";
+    public static final String AWS_JAVA_SDK = "aws-java-sdk";
+
     private static URL url(final String version) throws MalformedURLException {
         return new URL(String.format("http://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bom/%1$s/aws-java-sdk-bom-%1$s.pom", version));
     }
@@ -29,12 +32,12 @@ public class BomFetcher {
         for (int i = 0; i < deps.getLength(); i++) {
             final Element element = (Element) deps.item(i);
             final String groupId = element.getElementsByTagName("groupId").item(0).getTextContent();
-            if (!groupId.equals("com.amazonaws")) {
+            if (!groupId.equals(AWS_GROUP_ID)) {
                 continue;
             }
 
             final String artifactId = element.getElementsByTagName("artifactId").item(0).getTextContent();
-            if (!artifactId.startsWith("aws-java-sdk")) {
+            if (!artifactId.startsWith(AWS_JAVA_SDK)) {
                 continue;
             }
             result.add(artifactId);
