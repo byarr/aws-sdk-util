@@ -8,4 +8,5 @@ dependencies {
     compile group: 'com.squareup', name: 'javapoet', version: '1.7.0'
     compile 'commons-io:commons-io:2.5'
     compile 'com.amazonaws:aws-java-sdk:' + awsSdkVersion
+    compile 'org.reflections:reflections:0.9.10'
 }

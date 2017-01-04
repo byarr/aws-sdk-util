@@ -22,7 +22,7 @@ public class BomFetcher {
         return new URL(String.format("http://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bom/%1$s/aws-java-sdk-bom-%1$s.pom", version));
     }
 
-    private static List<String> getAllModules(final String version) throws IOException, ParserConfigurationException, SAXException {
+    public static List<String> getAllModules(final String version) throws IOException, ParserConfigurationException, SAXException {
         final List<String> result = new ArrayList<>();
 
         final URL pom = url(version);
@@ -47,7 +47,7 @@ public class BomFetcher {
     }
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
-        final List<String> modules = getAllModules("1.11.75");
+        final List<String> modules = getAllModules("1.11.0");
         System.out.println(modules);
     }
 
