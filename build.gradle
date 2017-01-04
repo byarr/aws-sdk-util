@@ -1,4 +1,5 @@
 group = 'com.brianyarr.jaws'
+ext.awsSdkVersion = '1.11.0'
 
 buildscript {
     repositories {
@@ -43,7 +44,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.0'
+            mavenBom 'com.amazonaws:aws-java-sdk-bom:' + awsSdkVersion
         }
     }
 

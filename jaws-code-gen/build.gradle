@@ -7,10 +7,5 @@ dependencies {
     compile project(':jaws-core')
     compile group: 'com.squareup', name: 'javapoet', version: '1.7.0'
     compile 'commons-io:commons-io:2.5'
-    compile 'com.amazonaws:aws-java-sdk-lambda'
-    compile 'com.amazonaws:aws-java-sdk-sns'
-    compile 'com.amazonaws:aws-java-sdk-api-gateway'
-    compile 'com.amazonaws:aws-java-sdk-cloudwatchmetrics'
-    compile 'com.amazonaws:aws-java-sdk-ec2'
-    compile 'com.amazonaws:aws-java-sdk-autoscaling'
+    compile 'com.amazonaws:aws-java-sdk:' + awsSdkVersion
 }
